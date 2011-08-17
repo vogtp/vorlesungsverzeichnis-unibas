@@ -50,7 +50,11 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			long dbid = ContentUris.parseId(uri);
 			parentCursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, DB.SELECTION_BY_ID, new String[] { Long.toString(dbid) }, null);
 			if (parentCursor != null && parentCursor.moveToFirst()) {
-				setParentId(parentCursor.getLong(VvEntity.INDEX_ACS_ID));
+				long parentId = parentCursor.getLong(VvEntity.INDEX_ACS_ID);
+				if (parentId == VvEntity.VV_FIXED_ENTRY_ACS_ID) {
+					parentId = 0;
+				}
+				setParentId(parentId);
 				setPeriodId(parentCursor.getLong(VvEntity.INDEX_PERIOD_ID));
 
 				if (VvEntity.ACS_OTYPE_EVENT.equalsIgnoreCase(parentCursor.getString(VvEntity.INDEX_ACS_OTYPE))) {
@@ -63,8 +67,34 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 				parentCursor = null;
 			}
 		}
-		dataloader = new AsyncVvDataLoader(this);
-		loadData();
+
+		if (parentCursor == null) {
+			cursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, VvEntity.SELECTION_FAVORITES, null, VvEntity.SORTORDER_DEFAULT);
+			((TextView) findViewById(R.id.tvInfo)).setText(R.string.msg_favorites);
+		} else {
+			cursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, VvEntity.SELECTION_BY_PARENT_PERIOD, selection, VvEntity.SORTORDER_DEFAULT);
+			dataloader = new AsyncVvDataLoader(this);
+			loadData();
+		}
+		SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER,
+				VvEntity.NAME_ACS_CREDITPOINTS }, new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits });
+		cursorAdapter.setViewBinder(new ViewBinder() {
+
+			@Override
+			public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+				if (columnIndex == VvEntity.INDEX_ACS_CREDITPOINTS) {
+					int cp = cursor.getInt(VvEntity.INDEX_ACS_CREDITPOINTS);
+					if (cp > 0) {
+						StringBuilder sb = new StringBuilder();
+						sb.append("ECTS points").append(": ").append(cp);
+						((TextView) view).setText(sb.toString());
+					}
+					return true;
+				}
+				return false;
+			}
+		});
+		getListView().setAdapter(cursorAdapter);
 	}
 
 	@Override
@@ -77,38 +107,12 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 		selection[0] = Long.toString(periodId);
 	}
 
-	private long getPeriodId() {
-		return loaderValues[0];
-	}
-
 	private void setParentId(long parentId) {
 		loaderValues[1] = parentId;
 		selection[1] = Long.toString(parentId);
 	}
 
 	private void loadData() {
-		cursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, VvEntity.SELECTION_BY_PARENT_PERIOD, selection, VvEntity.SORTORDER_DEFAULT);
-		SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE,
- VvEntity.NAME_ACS_NUMBER,
-				VvEntity.NAME_ACS_CREDITPOINTS },
-				new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits });
-		cursorAdapter.setViewBinder(new ViewBinder() {
-			
-			@Override
-			public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-				if (columnIndex == VvEntity.INDEX_ACS_CREDITPOINTS) {
-					int cp = cursor.getInt(VvEntity.INDEX_ACS_CREDITPOINTS);
-					if (cp > 0) {
-						StringBuilder sb = new StringBuilder();
-						sb.append("ECTS points").append(": ").append(cp);
-						((TextView)view).setText(sb.toString());
-					}
-					return true;
-				}
-				return false;
-			}
-		});
-		getListView().setAdapter(cursorAdapter);
 		actionBar.setProgressBarVisibility(View.VISIBLE);
 		dataloader.execute(loaderValues);
 	}

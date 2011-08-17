@@ -30,7 +30,7 @@ public class JsonVvLoader {
 		try {
 			StringBuffer url = new StringBuffer(JSON_URL);
 			url.append("?parent_id=").append(parentId);
-			if (periodId > -1) {
+			if (periodId > 0) {
 				url.append("&period_id=").append(periodId);
 			}
 			JSONArray data = new JSONArray(loadData(url.toString()));

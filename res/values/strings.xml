@@ -2,5 +2,7 @@
 <resources>
     <string name="app_name">Vorlesungsverzeichnis Uni Basel</string>
     <string name="app_title">Vorlesungsverzeichnis</string>
+    <string name="label_vv">Vorlesungsverzeichnis</string>
     <string name="label_ects_points">ECTS points</string>
+    <string name="msg_favorites">Favorites</string>
 </resources>
