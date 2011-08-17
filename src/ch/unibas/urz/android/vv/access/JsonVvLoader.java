@@ -21,7 +21,7 @@ import ch.unibas.urz.android.vv.provider.db.DB;
 
 public class JsonVvLoader {
 
-	private static final String JSON_URL = "http://urz-cfaa.urz.unibas.ch/dominik/vv_online/json2.cfm";
+	private static final String JSON_URL = "http://urz-cfaa.urz.unibas.ch/dominik/vv_online/json.cfm";
 
 	public static void loadEntries(Context ctx, long periodId, long parentId) {
 		long now = System.currentTimeMillis();

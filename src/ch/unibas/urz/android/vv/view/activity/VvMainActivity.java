@@ -8,13 +8,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.ViewBinder;
+import android.widget.TextView;
 import android.widget.Toast;
+import ch.unibas.urz.android.vv.R;
 import ch.unibas.urz.android.vv.helper.AsyncVvDataLoader;
 import ch.unibas.urz.android.vv.helper.AsyncVvDataLoader.LoaderCallback;
 import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.VvEntity;
+
+import com.markupartist.android.widget.ActionBar;
 
 public class VvMainActivity extends ListActivity implements LoaderCallback {
 	private AsyncVvDataLoader dataloader;
@@ -22,11 +28,19 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	private final String[] selection = new String[2];
 	private Cursor cursor;
 	private Cursor parentCursor;
+	private ActionBar actionBar;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+		setContentView(R.layout.vventity_list);
+
+		actionBar = (ActionBar) findViewById(R.id.actionBar1);
+		actionBar.setTitle(R.string.app_title);
+
 		// FIXME getdefault period id
 		setPeriodId(-1);
 		setParentId(0);
@@ -44,6 +58,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 					finish();
 				}
 
+				((TextView) findViewById(R.id.tvInfo)).setText(parentCursor.getString(VvEntity.INDEX_ACS_TITLE));
 			} else {
 				parentCursor = null;
 			}
@@ -73,9 +88,28 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 
 	private void loadData() {
 		cursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, VvEntity.SELECTION_BY_PARENT_PERIOD, selection, VvEntity.SORTORDER_DEFAULT);
-		SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE,
-				VvEntity.NAME_ACS_NUMBER }, new int[] { android.R.id.text1, android.R.id.text2 });
+		SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE,
+ VvEntity.NAME_ACS_NUMBER,
+				VvEntity.NAME_ACS_CREDITPOINTS },
+				new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits });
+		cursorAdapter.setViewBinder(new ViewBinder() {
+			
+			@Override
+			public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+				if (columnIndex == VvEntity.INDEX_ACS_CREDITPOINTS) {
+					int cp = cursor.getInt(VvEntity.INDEX_ACS_CREDITPOINTS);
+					if (cp > 0) {
+						StringBuilder sb = new StringBuilder();
+						sb.append("ECTS points").append(": ").append(cp);
+						((TextView)view).setText(sb.toString());
+					}
+					return true;
+				}
+				return false;
+			}
+		});
 		getListView().setAdapter(cursorAdapter);
+		actionBar.setProgressBarVisibility(View.VISIBLE);
 		dataloader.execute(loaderValues);
 	}
 
@@ -94,5 +128,6 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	@Override
 	public void loadingFinished() {
 		cursor.requery();
+		actionBar.setProgressBarVisibility(View.GONE);
 	}
 }
