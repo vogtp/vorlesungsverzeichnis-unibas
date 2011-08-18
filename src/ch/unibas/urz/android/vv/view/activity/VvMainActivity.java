@@ -2,13 +2,16 @@ package ch.unibas.urz.android.vv.view.activity;
 
 import android.app.ListActivity;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -21,6 +24,7 @@ import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.VvEntity;
 
 import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.ActionBar.Action;
 
 public class VvMainActivity extends ListActivity implements LoaderCallback {
 	private AsyncVvDataLoader dataloader;
@@ -29,7 +33,8 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	private Cursor cursor;
 	private Cursor parentCursor;
 	private ActionBar actionBar;
-
+	private SimpleCursorAdapter cursorAdapter;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,8 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 
 		actionBar = (ActionBar) findViewById(R.id.actionBar1);
 		actionBar.setTitle(R.string.app_title);
+		
+		actionBar.addAction(new ActionBar.IntentAction(this, new Intent(this, VvMainActivity.class), ch.unibas.urz.android.theme.R.drawable.home));
 
 		// FIXME getdefault period id
 		setPeriodId(-1);
@@ -76,8 +83,9 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			dataloader = new AsyncVvDataLoader(this);
 			loadData();
 		}
-		SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER,
-				VvEntity.NAME_ACS_CREDITPOINTS }, new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits });
+		cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER,
+				VvEntity.NAME_ACS_CREDITPOINTS, VvEntity.NAME_FAVORITE }, new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits, R.id.cbFavorite });
+
 		cursorAdapter.setViewBinder(new ViewBinder() {
 
 			@Override
@@ -86,8 +94,31 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 					int cp = cursor.getInt(VvEntity.INDEX_ACS_CREDITPOINTS);
 					if (cp > 0) {
 						StringBuilder sb = new StringBuilder();
-						sb.append("ECTS points").append(": ").append(cp);
+						sb.append(getString(R.string.label_ects_points)).append(": ").append(cp);
 						((TextView) view).setText(sb.toString());
+					} else {
+						((TextView) view).setText("");
+					}
+					return true;
+				} else if (columnIndex == VvEntity.INDEX_FAVORITE) {
+					final long acsId = cursor.getLong(VvEntity.INDEX_ACS_ID);
+					final String title = cursor.getString(VvEntity.INDEX_ACS_TITLE);
+					if (acsId != VvEntity.VV_FIXED_ENTRY_ACS_ID) {
+						view.setVisibility(View.VISIBLE);
+						CheckBox cbFavorite = (CheckBox) view;
+						final boolean selected = cursor.getInt(VvEntity.INDEX_FAVORITE) > 0;
+						cbFavorite.setChecked(selected);
+						cbFavorite.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								ContentValues values = new ContentValues();
+								values.put(VvEntity.NAME_FAVORITE, !selected);
+								getContentResolver().update(VvEntity.CONTENT_URI, values, VvEntity.SELECTION_BY_ACSID, new String[] { Long.toString(acsId) });
+								// FIXME cache
+							}
+						});
+					} else {
+						view.setVisibility(View.INVISIBLE);
 					}
 					return true;
 				}

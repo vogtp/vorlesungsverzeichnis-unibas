@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:padding="2dp">
-	<TextView android:layout_height="wrap_content"
-		android:textColor="@android:color/black" android:id="@+id/tvTitle"
-		android:layout_width="fill_parent"></TextView>
-	<TableRow android:layout_height="wrap_content" android:id="@+id/trDetails"
-		android:layout_width="fill_parent" android:paddingBottom="3dp">
-		<TextView android:layout_height="wrap_content"
-			android:textColor="@android:color/black" android:id="@+id/tvId"
-			android:text="TextView" android:singleLine="true"
-			android:layout_width="fill_parent" android:layout_weight="1"></TextView>
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:padding="2dp" android:orientation="horizontal">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_weight="1.5" android:id="@+id/linearLayout1"
+		android:orientation="vertical" android:layout_height="fill_parent">
 		<TextView android:textColor="@android:color/black"
-			android:id="@+id/tvCredits" 
-			android:singleLine="true" android:layout_width="fill_parent"
-			android:layout_weight="1" android:layout_height="wrap_content"
-			android:gravity="right"></TextView>
-	</TableRow>
+			android:layout_width="fill_parent" android:id="@+id/tvTitle"
+			android:layout_height="wrap_content"></TextView>
+		<LinearLayout android:layout_width="fill_parent" android:orientation="horizontal"
+			android:id="@+id/linearLayout2" android:layout_height="wrap_content">
+			<TextView android:textColor="@android:color/black"
+				android:layout_width="wrap_content" android:id="@+id/tvId"
+				android:text="TextView" android:singleLine="true"
+				android:layout_height="wrap_content"></TextView>
+			<TextView android:textColor="@android:color/black"
+				android:layout_width="fill_parent" android:id="@+id/tvCredits"
+				android:singleLine="true" android:gravity="right"
+				android:layout_height="wrap_content"></TextView>
+		</LinearLayout>
+	</LinearLayout>
+	<CheckBox android:id="@+id/cbFavorite" android:layout_height="wrap_content"
+		style="?android:attr/starStyle" android:focusable="false"
+		android:layout_width="wrap_content" android:layout_weight=".1"
+		android:layout_margin="4dp" />
 
 </LinearLayout>
