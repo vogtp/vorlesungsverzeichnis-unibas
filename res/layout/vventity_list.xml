@@ -5,13 +5,13 @@
 	<com.markupartist.android.widget.ActionBar
 		android:id="@+id/actionBar1" style="@style/ActionBarUnibas" />
 
-	<TextView  android:textColor="@android:color/darker_gray"
+	<TextView android:textColor="@android:color/darker_gray"
 		android:layout_height="wrap_content" android:id="@+id/tvInfo"
 		android:lines="1" android:layout_width="fill_parent"
 		android:background="@color/backgroundUni" android:layout_marginBottom="1dp"></TextView>
 	<ListView android:layout_width="fill_parent" style="@style/appListview"
 		android:layout_weight=".9" android:layout_height="fill_parent"
-		android:id="@android:id/list"></ListView>
+		android:id="@android:id/list" android:clipChildren="false"></ListView>
 	<include layout="@layout/footer_unbas_turquise" android:id="@+id/linearLayout1_ref"
 		android:layout_width="fill_parent" android:layout_height="90dp"
 		android:layout_gravity="bottom|left" android:layout_weight=".3" />

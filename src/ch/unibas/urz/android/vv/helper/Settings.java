@@ -1,5 +1,7 @@
 package ch.unibas.urz.android.vv.helper;
 
+import java.text.SimpleDateFormat;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -15,6 +17,7 @@ public class Settings {
 
 	public static final int APP_APPEARIANCE_UNIBAS_TURQUISE = 1;
 	public static final int APP_APPEARIANCE_ANDROID = 2;
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
 	private static Settings instance;
 	private final Context ctx;
@@ -54,6 +57,10 @@ public class Settings {
 		} catch (NumberFormatException e) {
 			return 1;
 		}
+	}
+
+	public SimpleDateFormat getDateFormat() {
+		return dateFormat;
 	}
 
 }

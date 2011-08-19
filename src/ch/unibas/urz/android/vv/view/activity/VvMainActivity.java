@@ -20,6 +20,7 @@ import android.widget.Toast;
 import ch.unibas.urz.android.vv.R;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader.LoaderCallback;
+import ch.unibas.urz.android.vv.helper.Settings;
 import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.VvEntity;
 
@@ -67,7 +68,6 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 					Toast.makeText(this, "Details not yet implemented", Toast.LENGTH_LONG).show();
 					finish();
 				}
-
 				((TextView) findViewById(R.id.tvInfo)).setText(parentCursor.getString(VvEntity.INDEX_ACS_TITLE));
 			} else {
 				parentCursor = null;
@@ -83,7 +83,8 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			loadData();
 		}
 		cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER,
-				VvEntity.NAME_ACS_CREDITPOINTS, VvEntity.NAME_FAVORITE }, new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits, R.id.cbFavorite });
+				VvEntity.NAME_ACS_CREDITPOINTS, VvEntity.NAME_FAVORITE, VvEntity.NAME_UPDATE_TIMESTAMP }, new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits, R.id.cbFavorite,
+				R.id.tvUpdated });
 
 		cursorAdapter.setViewBinder(new ViewBinder() {
 
@@ -92,10 +93,12 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 				if (columnIndex == VvEntity.INDEX_ACS_CREDITPOINTS) {
 					int cp = cursor.getInt(VvEntity.INDEX_ACS_CREDITPOINTS);
 					if (cp > 0) {
-						StringBuilder sb = new StringBuilder();
-						sb.append(getString(R.string.label_ects_points)).append(": ").append(cp);
-						((TextView) view).setText(sb.toString());
+						// StringBuilder sb = new StringBuilder();
+						// sb.append(getString(R.string.label_ects_points)).append(": ").append(cp);
+						((TextView) view).setText(Integer.toString(cp));
+						((View)view.getParent()).findViewById(R.id.labelCredits).setVisibility(View.VISIBLE);
 					} else {
+						((View) view.getParent()).findViewById(R.id.labelCredits).setVisibility(View.INVISIBLE);
 						((TextView) view).setText("");
 					}
 					return true;
@@ -118,6 +121,18 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 						});
 					} else {
 						view.setVisibility(View.INVISIBLE);
+					}
+					return true;
+				} else if (columnIndex == VvEntity.INDEX_UPDATE_TIMESTAMP) {
+					long updateTs = cursor.getLong(VvEntity.INDEX_UPDATE_TIMESTAMP);
+					TextView tv = (TextView) view;
+					if (updateTs > 0) {
+						tv.setText(Settings.getInstance().getDateFormat().format(updateTs));
+						tv.setVisibility(View.VISIBLE);
+						((View) view.getParent()).findViewById(R.id.labelUpdated).setVisibility(View.VISIBLE);
+					} else {
+						tv.setVisibility(View.INVISIBLE);
+						((View) view.getParent()).findViewById(R.id.labelUpdated).setVisibility(View.INVISIBLE);
 					}
 					return true;
 				}
