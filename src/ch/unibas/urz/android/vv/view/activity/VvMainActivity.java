@@ -18,13 +18,12 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.unibas.urz.android.vv.R;
-import ch.unibas.urz.android.vv.helper.AsyncVvDataLoader;
-import ch.unibas.urz.android.vv.helper.AsyncVvDataLoader.LoaderCallback;
+import ch.unibas.urz.android.vv.access.AsyncVvDataLoader;
+import ch.unibas.urz.android.vv.access.AsyncVvDataLoader.LoaderCallback;
 import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.VvEntity;
 
 import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.ActionBar.Action;
 
 public class VvMainActivity extends ListActivity implements LoaderCallback {
 	private AsyncVvDataLoader dataloader;

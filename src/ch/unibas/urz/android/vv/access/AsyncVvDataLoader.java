@@ -1,8 +1,7 @@
-package ch.unibas.urz.android.vv.helper;
+package ch.unibas.urz.android.vv.access;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import ch.unibas.urz.android.vv.access.JsonVvLoader;
 
 public class AsyncVvDataLoader extends AsyncTask<Long, Object, Object> {
 

@@ -36,7 +36,8 @@ public class JsonVvLoader {
 			JSONArray data = new JSONArray(loadData(url.toString()));
 			for (int i = 0; i < data.length(); i++) {
 				JSONObject object = data.getJSONObject(i);
-				String[] acsIdSelectionArgs = new String[] { Long.toString(object.getLong(DB.VvEntity.NAME_ACS_ID)) };
+				long acsId = object.getLong(DB.VvEntity.NAME_ACS_ID);
+				String[] acsIdSelectionArgs = new String[] { Long.toString(acsId) };
 				boolean exists = false;
 				Cursor c = contentResolver.query(DB.VvEntity.CONTENT_URI, DB.VvEntity.PROJECTION_ACS_ID, DB.VvEntity.SELECTION_BY_ACSID, acsIdSelectionArgs, null);
 				if (c != null) {
@@ -55,7 +56,7 @@ public class JsonVvLoader {
 				ContentValues values = new ContentValues();
 				values.put(DB.VvEntity.NAME_PERIOD_ID, periodId);
 				values.put(DB.VvEntity.NAME_UPDATE_TIMESTAMP, now);
-				values.put(DB.VvEntity.NAME_ACS_ID, object.getLong(DB.VvEntity.NAME_ACS_ID));
+				values.put(DB.VvEntity.NAME_ACS_ID, acsId);
 				values.put(DB.VvEntity.NAME_ACS_NUMBER, object.getString(DB.VvEntity.NAME_ACS_NUMBER));
 				values.put(DB.VvEntity.NAME_ACS_CATEGORY, object.getString(DB.VvEntity.NAME_ACS_CATEGORY));
 				values.put(DB.VvEntity.NAME_ACS_TITLE, object.getString(DB.VvEntity.NAME_ACS_TITLE));
