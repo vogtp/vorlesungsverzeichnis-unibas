@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.OpenHelper;
+import ch.unibas.urz.android.vv.provider.db.DBBackendVvDetails;
 import ch.unibas.urz.android.vv.provider.db.DBBackendVvEntity;
 
 public class VvContentProvider extends ContentProvider {
@@ -14,6 +15,7 @@ public class VvContentProvider extends ContentProvider {
 	public static final String AUTHORITY = "ch.unibas.urz.android.vorlesungsverzeichnis";
 
 	private static final int VV_ENTITY = 1;
+	private static final int VV_DETAILS = 2;
 
 	private static final UriMatcher sUriMatcher;
 
@@ -32,6 +34,9 @@ public class VvContentProvider extends ContentProvider {
 		case VV_ENTITY:
 			count = DBBackendVvEntity.delete(openHelper, uri, selection, selectionArgs);
 			break;
+		case VV_DETAILS:
+			count = DBBackendVvDetails.delete(openHelper, uri, selection, selectionArgs);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -45,6 +50,8 @@ public class VvContentProvider extends ContentProvider {
 		switch (sUriMatcher.match(uri)) {
 		case VV_ENTITY:
 			return DBBackendVvEntity.getType(uri);
+		case VV_DETAILS:
+			return DBBackendVvDetails.getType(uri);
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -56,6 +63,9 @@ public class VvContentProvider extends ContentProvider {
 		switch (sUriMatcher.match(uri)) {
 		case VV_ENTITY:
 			ret = DBBackendVvEntity.insert(openHelper, uri, initialValues);
+			break;
+		case VV_DETAILS:
+			ret = DBBackendVvDetails.insert(openHelper, uri, initialValues);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -71,6 +81,9 @@ public class VvContentProvider extends ContentProvider {
 		switch (sUriMatcher.match(uri)) {
 		case VV_ENTITY:
 			c = DBBackendVvEntity.query(openHelper, uri, projection, selection, selectionArgs, sortOrder);
+			break;
+		case VV_DETAILS:
+			c = DBBackendVvDetails.query(openHelper, uri, projection, selection, selectionArgs, sortOrder);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -89,6 +102,9 @@ public class VvContentProvider extends ContentProvider {
 		case VV_ENTITY:
 			count = DBBackendVvEntity.update(openHelper, uri, values, selection, selectionArgs);
 			break;
+		case VV_DETAILS:
+			count = DBBackendVvDetails.update(openHelper, uri, values, selection, selectionArgs);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -105,6 +121,8 @@ public class VvContentProvider extends ContentProvider {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		sUriMatcher.addURI(AUTHORITY, DB.VvEntity.CONTENT_ITEM_NAME, VV_ENTITY);
 		sUriMatcher.addURI(AUTHORITY, DB.VvEntity.CONTENT_ITEM_NAME + "/#", VV_ENTITY);
+		sUriMatcher.addURI(AUTHORITY, DB.VvDetails.CONTENT_ITEM_NAME, VV_DETAILS);
+		sUriMatcher.addURI(AUTHORITY, DB.VvDetails.CONTENT_ITEM_NAME + "/#", VV_DETAILS);
 	}
 
 }

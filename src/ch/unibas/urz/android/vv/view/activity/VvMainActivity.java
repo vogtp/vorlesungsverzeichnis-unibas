@@ -16,19 +16,20 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
-import android.widget.Toast;
 import ch.unibas.urz.android.vv.R;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader.LoaderCallback;
 import ch.unibas.urz.android.vv.helper.Settings;
 import ch.unibas.urz.android.vv.provider.db.DB;
+import ch.unibas.urz.android.vv.provider.db.DB.VvDetails;
 import ch.unibas.urz.android.vv.provider.db.DB.VvEntity;
 
 import com.markupartist.android.widget.ActionBar;
 
 public class VvMainActivity extends ListActivity implements LoaderCallback {
-	private AsyncVvDataLoader dataloader;
-	private final Long[] loaderValues = new Long[2];
+	public static final String EXTRA_PERIOD_ID = "extraPeriodId";
+	public static final String EXTRA_ACS_OBJID = "extraAcsObjId";
+	private final AsyncVvDataLoader dataloader = new AsyncVvDataLoader(this);
 	private final String[] selection = new String[2];
 	private Cursor cursor;
 	private Cursor parentCursor;
@@ -65,7 +66,13 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 				setPeriodId(parentCursor.getLong(VvEntity.INDEX_PERIOD_ID));
 
 				if (VvEntity.ACS_OTYPE_EVENT.equalsIgnoreCase(parentCursor.getString(VvEntity.INDEX_ACS_OTYPE))) {
-					Toast.makeText(this, "Details not yet implemented", Toast.LENGTH_LONG).show();
+					//Toast.makeText(this, "Details not yet implemented", Toast.LENGTH_LONG).show();
+					long id = parentCursor.getLong(DB.INDEX_ID);
+					Uri detailsUri = ContentUris.withAppendedId(VvDetails.CONTENT_URI, id);
+					Intent intent = new Intent(Intent.ACTION_VIEW, detailsUri);
+					intent.putExtra(EXTRA_PERIOD_ID, parentCursor.getLong(VvEntity.INDEX_PERIOD_ID));
+					intent.putExtra(EXTRA_ACS_OBJID, parentCursor.getLong(VvEntity.INDEX_ACS_OBJID));
+					startActivity(intent);
 					finish();
 				}
 				((TextView) findViewById(R.id.tvInfo)).setText(parentCursor.getString(VvEntity.INDEX_ACS_TITLE));
@@ -79,7 +86,6 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			((TextView) findViewById(R.id.tvInfo)).setText(R.string.msg_favorites);
 		} else {
 			cursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, VvEntity.SELECTION_BY_PARENT_PERIOD, selection, VvEntity.SORTORDER_DEFAULT);
-			dataloader = new AsyncVvDataLoader(this);
 			loadData();
 		}
 		cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER,
@@ -148,18 +154,18 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	}
 
 	private void setPeriodId(long periodId) {
-		loaderValues[0] = periodId;
+		dataloader.setPeriodId(periodId);
 		selection[0] = Long.toString(periodId);
 	}
 
 	private void setParentId(long parentId) {
-		loaderValues[1] = parentId;
+		dataloader.setId(parentId);
 		selection[1] = Long.toString(parentId);
 	}
 
 	private void loadData() {
 		actionBar.setProgressBarVisibility(View.VISIBLE);
-		dataloader.execute(loaderValues);
+		dataloader.execute((Object[]) null);
 	}
 
 	@Override

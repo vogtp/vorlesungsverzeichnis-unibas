@@ -18,6 +18,7 @@ public class Settings {
 	public static final int APP_APPEARIANCE_UNIBAS_TURQUISE = 1;
 	public static final int APP_APPEARIANCE_ANDROID = 2;
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
 	private static Settings instance;
 	private final Context ctx;
@@ -61,6 +62,10 @@ public class Settings {
 
 	public SimpleDateFormat getDateFormat() {
 		return dateFormat;
+	}
+
+	public SimpleDateFormat getTimeFomat() {
+		return timeFormat;
 	}
 
 }
