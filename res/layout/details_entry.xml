@@ -3,11 +3,21 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:background="@color/unituerkis" android:layout_height="fill_parent"
 	android:paddingBottom="1dp">
-	<TextView android:text="TextView" android:layout_width="fill_parent"
-		android:background="@color/backgroundUni" android:layout_height="wrap_content"
-		android:id="@+id/tvLabel"></TextView>
-	<TextView android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:background="@color/backgroundUni"
-		android:text="TextView" android:id="@+id/tvText" android:textColor="@android:color/black"></TextView>
+	<FrameLayout android:layout_width="fill_parent" android:id="@+id/frameLayout1"
+		android:layout_height="wrap_content" android:background="@color/backgroundUni">
+		<LinearLayout android:id="@+id/linearLayout1"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:orientation="vertical">
+			<TextView  android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:id="@+id/tvLabel"></TextView>
+			<TextView android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:id="@+id/tvText" android:textColor="@android:color/black"></TextView>
+		</LinearLayout>
+		<TextView android:id="@+id/tvButtonMoreLess" android:clickable="true" android:padding="3dp"
+			android:textColor="@android:color/white" android:layout_gravity="bottom|right"
+			android:layout_width="wrap_content" android:background="@color/unituerkis"
+			android:layout_height="wrap_content" android:text="@string/labelMore"></TextView>
+	</FrameLayout>
 
 </LinearLayout>

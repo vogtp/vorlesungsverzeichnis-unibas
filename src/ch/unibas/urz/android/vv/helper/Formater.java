@@ -39,7 +39,7 @@ public class Formater {
 				}
 				JSONObject obj = moduleArray.getJSONObject(i);
 				// {"MODUL":"Modul Judentum","STUDIENGANG":"BSF - Religionswissenschaft"}
-				module.append(obj.getString("MODUL")).append("(").append(obj.getString("STUDIENGANG")).append(")");
+				module.append(obj.getString("MODUL")).append(" (").append(obj.getString("STUDIENGANG")).append(")");
 			}
 			return module.toString();
 		} catch (JSONException e) {

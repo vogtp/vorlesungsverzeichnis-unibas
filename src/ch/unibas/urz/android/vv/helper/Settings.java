@@ -68,4 +68,8 @@ public class Settings {
 		return timeFormat;
 	}
 
+	public int getDetailsMaxLines() {
+		return 3;
+	}
+
 }

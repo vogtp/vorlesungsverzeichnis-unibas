@@ -41,6 +41,7 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 		setContentView(R.layout.details);
 		actionBar = (ActionBar) findViewById(R.id.actionBar1);
 		actionBar.setTitle(R.string.app_title);
+		actionBar.addAction(new ActionBar.IntentAction(this, new Intent(this, VvMainActivity.class), ch.unibas.urz.android.theme.R.drawable.home));
 
 		Intent intent = getIntent();
 		Uri uri = intent.getData();
@@ -62,7 +63,6 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 		}
 		loadData();
 	}
-
 
 	private void displayData() {
 		if (!detailsCursor.moveToFirst()) {

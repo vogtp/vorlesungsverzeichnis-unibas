@@ -6,10 +6,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import ch.unibas.urz.android.vv.R;
+import ch.unibas.urz.android.vv.helper.Settings;
 
 public class DetailsEntryView extends LinearLayout {
 
+	private static final int CHARS_PER_LINE = 70;
 	private final View v;
+	private boolean expanded = false;
 
 	public DetailsEntryView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -38,9 +41,39 @@ public class DetailsEntryView extends LinearLayout {
 		}
 		TextView tvText = (TextView) v.findViewById(R.id.tvText);
 		tvText.setText(text);
+		int lines = 1;
+		int chrs = text.length();
+		final int maxLines = Settings.getInstance().getDetailsMaxLines();
+		if (chrs <= maxLines * CHARS_PER_LINE) {
+			int idx = 0;
+			while ((idx = text.indexOf("\n", idx + 1)) > -1) {
+				lines++;
+			}
+		}
+		final TextView tvButtonMoreLess = (TextView) v.findViewById(R.id.tvButtonMoreLess);
+		if (chrs > maxLines * CHARS_PER_LINE || lines > maxLines) {
+			tvText.setMaxLines(maxLines);
+			tvButtonMoreLess.setVisibility(View.VISIBLE);
+			tvButtonMoreLess.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View tvButton) {
+					TextView tv = (TextView) v.findViewById(R.id.tvText);
+					if (expanded) {
+						tv.setMaxLines(maxLines);
+						expanded = false;
+						((TextView) tvButton).setText(R.string.labelMore);
+					} else {
+						tv.setMaxLines(Integer.MAX_VALUE);
+						expanded = true;
+						((TextView) tvButton).setText(R.string.labelLess);
+					}
+					v.requestLayout();
+				}
+			});
+		} else {
+			tvButtonMoreLess.setVisibility(View.GONE);
+		}
 	}
-
-
 
 }
 

@@ -32,4 +32,6 @@
     <string name="detailsEinsatzDigitalerMedien">Einsatz digitaler Medien</string>
     <string name="detailsUnterrichtssprache">Unterrichtssprache</string>
     <string name="detailsBemerkungen">Bemerkungen</string>
+    <string name="labelMore">mehr</string>
+    <string name="labelLess">weniger</string>
 </resources>
