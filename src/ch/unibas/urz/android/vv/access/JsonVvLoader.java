@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,7 +16,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import ch.unibas.urz.android.vv.helper.Logger;
-import ch.unibas.urz.android.vv.helper.Settings;
 import ch.unibas.urz.android.vv.provider.VvContentProvider;
 import ch.unibas.urz.android.vv.provider.db.DB;
 
@@ -155,50 +152,13 @@ public class JsonVvLoader {
 			values.put(DB.VvDetails.NAME_HNOTE, object.getString(DB.VvDetails.NAME_HNOTE));
 			values.put(DB.VvDetails.NAME_LINK, object.getString(DB.VvDetails.NAME_LINK));
 			values.put(DB.VvDetails.NAME_LINKDESC, object.getString(DB.VvDetails.NAME_LINKDESC));
+			values.put(DB.VvDetails.NAME_VNR, object.getString(DB.VvDetails.NAME_VNR));
 
 
 			// special fields
-			StringBuilder module = new StringBuilder();
-			JSONArray moduleArray = baseObject.getJSONArray("module");
-			for (int i = 0; i < moduleArray.length(); i++) {
-				if (module.length() > 0) {
-					module.append("\n");
-				}
-				JSONObject obj = moduleArray.getJSONObject(i);
-				// {"MODUL":"Modul Judentum","STUDIENGANG":"BSF - Religionswissenschaft"}
-				module.append(obj.getString("MODUL")).append("(").append(obj.getString("STUDIENGANG")).append(")");
-			}
-			values.put(DB.VvDetails.NAME_MODULE, module.toString());
-
-			StringBuilder lecturer = new StringBuilder();
-			JSONArray lecturerArray = baseObject.getJSONArray("lecturer");
-			for (int i = 0; i < lecturerArray.length(); i++) {
-				if (lecturer.length() > 0) {
-					lecturer.append("\n");
-				}
-				JSONObject obj = lecturerArray.getJSONObject(i);
-				// {"LECMAIL":"hans-peter.mathys@unibas.ch","LEC_LASTNAME":"Mathys","LEC_FIRSTNAME":"Hans-Peter"}
-				lecturer.append(obj.getString("LEC_FIRSTNAME")).append(" ").append(obj.getString("LEC_LASTNAME"));
-				lecturer.append("(").append(obj.getString("LECMAIL")).append(")");
-			}
-			values.put(DB.VvDetails.NAME_LECTURER, lecturer.toString());
-
-			StringBuilder timePlace = new StringBuilder();
-			JSONArray timeArray = baseObject.getJSONArray("time");
-			for (int i = 0; i < timeArray.length(); i++) {
-				if (timePlace.length() > 0) {
-					timePlace.append("\n");
-				}
-				JSONObject obj = timeArray.getJSONObject(i);
-				// {"ORT_ID":510,"WKD_ID":1,"DAY":"Montag","RAUM_ID":8150,"RAUM":"Seminarraum 106",
-				// "STARTTIME":1.015E8,"ENDTIME":1.2E8,"ORT":"Kollegienhaus"}
-				// Mittwoch, 08.15-10.00 Chemie, Organische , Grosser Hörsaal OC
-				timePlace.append(obj.getString("DAY")).append(", ");
-				SimpleDateFormat sdf = Settings.getInstance().getTimeFomat();
-				timePlace.append(sdf.format(new Date(obj.getLong("STARTTIME")))).append(" - ").append(sdf.format(new Date(obj.getLong("ENDTIME"))));
-				timePlace.append("; ").append(obj.getString("ORT")).append(", ").append(obj.getString("RAUM"));
-			}
-			values.put(DB.VvDetails.NAME_TIME_PLACE, timePlace.toString());
+			values.put(DB.VvDetails.NAME_MODULE, baseObject.getJSONArray("module").toString());
+			values.put(DB.VvDetails.NAME_LECTURER, baseObject.getJSONArray("lecturer").toString());
+			values.put(DB.VvDetails.NAME_TIME_PLACE, baseObject.getJSONArray("time").toString());
 
 			insertOrUpdate.withValues(values);
 			operations.add(insertOrUpdate.build());
