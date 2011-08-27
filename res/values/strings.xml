@@ -8,6 +8,7 @@
     <string name="labelUpdated">Updated:</string>
     <string name="detailsTitle">Titel</string>
     <string name="detailsType">Typ</string>
+    <string name="detailsEcts">ECTS Punkte</string>
     <string name="detailsDozierende">Dozierende</string>
     <string name="detailsZeit">Zeit</string>
     <string name="detailsBeginndatum">Beginndatum</string>

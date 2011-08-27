@@ -1,5 +1,7 @@
 package ch.unibas.urz.android.vv.view.activity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
@@ -84,6 +87,7 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 		sb.append(detailsCursor.getString(VvDetails.INDEX_TYPE));
 		tvType.setText(sb.toString());
 
+		addDetailView(llMain, R.string.detailsEcts, VvDetails.INDEX_CREDITP);
 		addDetailView(llMain, R.string.detailsDozierende, Formater.formatLecturer(detailsCursor.getString(VvDetails.INDEX_LECTURER)));
 		addDetailView(llMain, R.string.detailsZeit, Formater.formatTimePlace(detailsCursor.getString(VvDetails.INDEX_TIME_PLACE)));
 		addViewDate(llMain, R.string.detailsBeginndatum, VvDetails.INDEX_STARTDATE);
@@ -112,24 +116,39 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 	}
 
 	private void addViewLink(LinearLayout llMain, int label, int indexLink, int indexLinkdesc) {
-		// // TODO Auto-generated method stub
-		// String text = detailsCursor.getString(indexLinkdesc) + " -> " +
-		// detailsCursor.getString(indexLink);
-		// llMain.addView(new DetailsEntryView(this, llMain, label, text));
+		String linkDesc = detailsCursor.getString(indexLinkdesc);
+		String link = detailsCursor.getString(indexLink);
+		StringBuilder text = new StringBuilder();
+		if (!TextUtils.isEmpty(linkDesc)) {
+			text.append(linkDesc).append(": ");
+		}
+		if (!TextUtils.isEmpty(linkDesc)) {
+			text.append(link);
+			addDetailView(llMain, label, text.toString());
+		}
 	}
 
+	private static final SimpleDateFormat dateParseFormat = new SimpleDateFormat("yyyyMMdd");
+
 	private void addViewDate(LinearLayout llMain, int label, int field) {
-		String string = Settings.getInstance().getDateFormat().format(new Date(detailsCursor.getLong(field)));
-		addDetailView(llMain, label, string);
+		String dateStr = Long.toString(detailsCursor.getLong(field));
+		try {
+			Date d = dateParseFormat.parse(dateStr);
+			String formatedDate = Settings.getInstance().getDateFormat().format(d);
+			addDetailView(llMain, label, formatedDate);
+		} catch (ParseException e) {
+			Logger.w("Cannot parse date " + dateStr, e);
+		}
 	}
 
 	private void addDetailView(LinearLayout llMain, int label, int field) {
 		addDetailView(llMain, label, detailsCursor.getString(field));
-		
 	}
 
 	private void addDetailView(LinearLayout llMain, int label, String field) {
-		llMain.addView(new DetailsEntryView(this, label, field));
+		if (!TextUtils.isEmpty(field)) {
+			llMain.addView(new DetailsEntryView(this, label, field));
+		}
 	}
 
 	@Override

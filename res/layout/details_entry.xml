@@ -8,16 +8,17 @@
 		<LinearLayout android:id="@+id/linearLayout1"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
 			android:orientation="vertical">
-			<TextView  android:layout_width="fill_parent"
+			<TextView android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:id="@+id/tvLabel"></TextView>
 			<TextView android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:id="@+id/tvText" android:textColor="@android:color/black"></TextView>
+				android:layout_height="wrap_content" android:id="@+id/tvText"
+				android:textColor="@android:color/black" android:autoLink="email|web|map"></TextView>
 		</LinearLayout>
-		<TextView android:id="@+id/tvButtonMoreLess" android:clickable="true" android:padding="3dp"
-			android:textColor="@android:color/white" android:layout_gravity="bottom|right"
-			android:layout_width="wrap_content" android:background="@color/unituerkis"
-			android:layout_height="wrap_content" android:text="@string/labelMore"></TextView>
+		<TextView android:id="@+id/tvButtonMoreLess"
+			android:clickable="true" android:padding="3dp" android:textColor="@android:color/white"
+			android:layout_gravity="bottom|right" android:layout_width="wrap_content"
+			android:background="@color/unituerkis" android:layout_height="wrap_content"
+			android:text="@string/labelMore" android:ems="4" android:gravity="center"></TextView>
 	</FrameLayout>
 
 </LinearLayout>
