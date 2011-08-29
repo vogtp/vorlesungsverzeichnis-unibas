@@ -1,7 +1,5 @@
 package ch.unibas.urz.android.vv.helper;
 
-import java.text.SimpleDateFormat;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -17,8 +15,6 @@ public class Settings {
 
 	public static final int APP_APPEARIANCE_UNIBAS_TURQUISE = 1;
 	public static final int APP_APPEARIANCE_ANDROID = 2;
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
 	private static Settings instance;
 	private final Context ctx;
@@ -40,32 +36,6 @@ public class Settings {
 
 	protected SharedPreferences getPreferences() {
 		return PreferenceManager.getDefaultSharedPreferences(ctx);
-	}
-
-	public SearchType getSearchType() {
-		String seachType = getPreferences().getString("prefKeySearchType", "0");
-		if (TYPE_STAFF.equals(seachType)) {
-			return SearchType.STAFF;
-		} else if (TYPE_STUDENTS.equals(seachType)) {
-			return SearchType.STUDENTS;
-		}
-		return SearchType.ALL;
-	}
-
-	public int getAppAppearance() {
-		try {
-			return Integer.parseInt(getPreferences().getString("prefKeyAppAppearance", "1"));
-		} catch (NumberFormatException e) {
-			return 1;
-		}
-	}
-
-	public SimpleDateFormat getDateFormat() {
-		return dateFormat;
-	}
-
-	public SimpleDateFormat getTimeFomat() {
-		return timeFormat;
 	}
 
 	public int getDetailsMaxLines() {

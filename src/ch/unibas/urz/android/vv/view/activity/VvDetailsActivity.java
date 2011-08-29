@@ -1,5 +1,6 @@
 package ch.unibas.urz.android.vv.view.activity;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -135,7 +136,7 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 		String dateStr = Long.toString(detailsCursor.getLong(field));
 		try {
 			Date d = dateParseFormat.parse(dateStr);
-			String formatedDate = Settings.getInstance().getDateFormat().format(d);
+			String formatedDate = DateFormat.getDateInstance().format(d);
 			addDetailView(llMain, label, formatedDate);
 		} catch (ParseException e) {
 			Logger.w("Cannot parse date " + dateStr, e);

@@ -1,5 +1,7 @@
 package ch.unibas.urz.android.vv.view.activity;
 
+import java.text.DateFormat;
+
 import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -133,7 +135,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 					long updateTs = cursor.getLong(VvEntity.INDEX_UPDATE_TIMESTAMP);
 					TextView tv = (TextView) view;
 					if (updateTs > 0) {
-						tv.setText(Settings.getInstance().getDateFormat().format(updateTs));
+						tv.setText(DateFormat.getDateInstance().format(updateTs));
 						tv.setVisibility(View.VISIBLE);
 						((View) view.getParent()).findViewById(R.id.labelUpdated).setVisibility(View.VISIBLE);
 					} else {
