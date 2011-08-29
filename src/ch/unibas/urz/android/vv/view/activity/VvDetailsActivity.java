@@ -94,9 +94,8 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 				.formatTimePlace(detailsCursor.getString(VvDetails.INDEX_TIME_PLACE), detailsCursor.getString(VvDetails.INDEX_NOTETIME)));
 		addViewDate(llMain, R.string.detailsBeginndatum, VvDetails.INDEX_STARTDATE);
 		addViewDate(llMain, R.string.detailsEnddatum, VvDetails.INDEX_ENDDATE);
-		addDetailView(llMain, R.string.detailsTeilnahmebedingungen, VvDetails.INDEX_TVORAUSSETZUNG); // ???
-		addDetailView(llMain, R.string.detailsAnmeldung, VvDetails.INDEX_WBELEGEN);
-		// ???
+		addDetailView(llMain, R.string.detailsTeilnahmebedingungen, VvDetails.INDEX_TVORAUSSETZUNG);
+		addDetailView(llMain, R.string.detailsAnmeldung, VvDetails.INDEX_ANMELDUNGL);
 		addDetailView(llMain, R.string.detailsIntervall, VvDetails.INDEX_INTERVAL);
 		addDetailView(llMain, R.string.detailsAngebotsmuster, VvDetails.INDEX_AMUSTER);
 		addDetailView(llMain, R.string.detailsOrganisationseinheit, VvDetails.INDEX_OEINHEIT);

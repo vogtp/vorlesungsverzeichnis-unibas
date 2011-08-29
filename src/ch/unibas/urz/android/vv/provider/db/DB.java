@@ -19,7 +19,7 @@ public interface DB {
 
 	public class OpenHelper extends SQLiteOpenHelper {
 
-		private static final int DATABASE_VERSION = 3;
+		private static final int DATABASE_VERSION = 4;
 
 		private static final String CREATE_ENTITY_TABLE = "create table if not exists " + VvEntity.TABLE_NAME + " (" + DB.NAME_ID + " integer primary key, "
 				+ VvEntity.NAME_ACS_ID + " long," + VvEntity.NAME_ACS_NUMBER + " text, " + VvEntity.NAME_ACS_CATEGORY + " text, " + VvEntity.NAME_ACS_TITLE + " text, "
@@ -35,7 +35,8 @@ public interface DB {
 				+ VvDetails.NAME_CREDITP + " text," + VvDetails.NAME_LPRUEF + " text," + VvDetails.NAME_WIEDERHOLUNGPRUEF + " text," + VvDetails.NAME_PRAESENZ + " text,"
 				+ VvDetails.NAME_BEMERKUNG + " text," + VvDetails.NAME_LECTURER + " text," + VvDetails.NAME_TIME_PLACE + " text," + VvDetails.NAME_UPDATE_TIMESTAMP + " long,"
 				+ VvDetails.NAME_PERIOD_ID + " long, " + VvDetails.NAME_TYPE + " text, " + VvDetails.NAME_LERNZIELE + " text, " + VvDetails.NAME_LITERATUR + " text, "
-				+ VvDetails.NAME_HNOTE + " text, " + VvDetails.NAME_LINK + " text, " + VvDetails.NAME_LINKDESC + " text, " + VvDetails.NAME_VNR + " text);";
+				+ VvDetails.NAME_HNOTE + " text, " + VvDetails.NAME_LINK + " text, " + VvDetails.NAME_LINKDESC + " text, " + VvDetails.NAME_VNR + " text, "
+				+ VvDetails.NAME_ANMELDUNGL + " text);";
 		
 		public OpenHelper(Context context) {
 			super(context, DB.DATABASE_NAME, null, DATABASE_VERSION);
@@ -70,6 +71,10 @@ public interface DB {
 				db.execSQL("create index idx_vvdetails_acs_objid on " + VvDetails.TABLE_NAME + " (" + VvDetails.NAME_ACS_OBJ_ID + "); ");
 				db.execSQL("create index idx_vvdetails_update on " + VvDetails.TABLE_NAME + " (" + VvDetails.NAME_UPDATE_TIMESTAMP + "); ");
 				db.execSQL("create index idx_vvdetails_period on " + VvDetails.TABLE_NAME + " (" + VvDetails.NAME_PERIOD_ID + "); ");
+
+			case 3:
+				Logger.w("Upgrading to DB Version 4...");
+				db.execSQL("alter table " + VvDetails.TABLE_NAME + " add column " + VvDetails.NAME_ANMELDUNGL + " text;");
 
 			default:
 				Logger.w("Finished DB upgrading!");
@@ -186,6 +191,7 @@ public interface DB {
 		public static final String NAME_LINK = "LINK";
 		public static final String NAME_LINKDESC = "LINKDESC";
 		public static final String NAME_VNR = "VNR";
+		public static final String NAME_ANMELDUNGL = "ANMELDUNGL";
 		
 		public static final int INDEX_ACS_OBJ_ID = 1;
 		public static final int INDEX_TITEL = 2;
@@ -219,11 +225,12 @@ public interface DB {
 		public static final int INDEX_LINK = 30;
 		public static final int INDEX_LINKDESC = 31;
 		public static final int INDEX_VNR = 32;
+		public static final int INDEX_ANMELDUNGL = 33;
 
 		public static final String[] colNames = new String[] { NAME_ID, NAME_ACS_OBJ_ID, NAME_TITEL, NAME_INHALT, NAME_AMUSTER, NAME_OEINHEIT,
 				NAME_NOTETIME, NAME_INTERVAL, NAME_STARTDATE, NAME_ENDDATE, NAME_MODULE, NAME_FAKULTAT, NAME_USPRACHE, NAME_SKALA, NAME_TVORAUSSETZUNG, NAME_WBELEGEN,
 				NAME_ANABMELDUNG, NAME_CREDITP, NAME_LPRUEF, NAME_WIEDERHOLUNGPRUEF, NAME_PRAESENZ, NAME_BEMERKUNG, NAME_LECTURER, NAME_TIME_PLACE, NAME_UPDATE_TIMESTAMP,
-				NAME_PERIOD_ID, NAME_TYPE, NAME_LERNZIELE, NAME_LITERATUR, NAME_HNOTE, NAME_LINK, NAME_LINKDESC, NAME_VNR };
+				NAME_PERIOD_ID, NAME_TYPE, NAME_LERNZIELE, NAME_LITERATUR, NAME_HNOTE, NAME_LINK, NAME_LINKDESC, NAME_VNR, NAME_ANMELDUNGL };
 
 		public static final String[] PROJECTION_DEFAULT = colNames;
 		
