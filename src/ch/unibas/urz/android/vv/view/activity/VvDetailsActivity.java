@@ -165,7 +165,15 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 	}
 
 	private void loadData() {
-		actionBar.setProgressBarVisibility(View.VISIBLE);
-		dataloader.execute((Object[]) null);
+		long now = System.currentTimeMillis();
+		long update = now;
+		if (detailsCursor.moveToFirst()) {
+			update = detailsCursor.getLong(VvDetails.INDEX_UPDATE_TIMESTAMP);
+		}
+		long delta = now - update;
+		if (delta == 0 || delta > Settings.getInstance().getUpdateFrequency()) {
+			actionBar.setProgressBarVisibility(View.VISIBLE);
+			dataloader.execute((Object[]) null);
+		}
 	}
 }

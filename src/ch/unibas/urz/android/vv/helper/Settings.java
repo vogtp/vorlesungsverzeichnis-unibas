@@ -72,4 +72,8 @@ public class Settings {
 		return 3;
 	}
 
+	public long getUpdateFrequency() {
+		return 1000 * 60 * 60 * 24;
+	}
+
 }

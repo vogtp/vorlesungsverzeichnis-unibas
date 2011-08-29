@@ -164,8 +164,20 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	}
 
 	private void loadData() {
-		actionBar.setProgressBarVisibility(View.VISIBLE);
-		dataloader.execute((Object[]) null);
+		long now = System.currentTimeMillis();
+		long update = now;
+		cursor.requery();
+		for (cursor.moveToFirst(); cursor.moveToNext();) {
+			long u = cursor.getLong(VvEntity.INDEX_UPDATE_TIMESTAMP);
+			if (u < update) {
+				update = u;
+			}
+		}
+		long delta = now - update;
+		if (delta == 0 || delta > Settings.getInstance().getUpdateFrequency()) {
+			actionBar.setProgressBarVisibility(View.VISIBLE);
+			dataloader.execute((Object[]) null);
+		}
 	}
 
 	@Override
