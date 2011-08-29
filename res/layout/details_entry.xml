@@ -17,7 +17,7 @@
 		<TextView android:id="@+id/tvButtonMoreLess"
 			android:clickable="true" android:padding="3dp" android:textColor="@android:color/white"
 			android:layout_gravity="bottom|right" android:layout_width="wrap_content"
-			android:background="@color/unituerkis" android:layout_height="wrap_content"
+			android:background="@color/unituerkisalpha" android:layout_height="wrap_content"
 			android:text="@string/labelMore" android:ems="4" android:gravity="center"
 			></TextView>
 	</FrameLayout>
