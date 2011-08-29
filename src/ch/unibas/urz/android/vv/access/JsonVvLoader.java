@@ -21,7 +21,8 @@ import ch.unibas.urz.android.vv.provider.db.DB;
 
 public class JsonVvLoader {
 
-	private static final String JSON_URL = "http://urz-cfaa.urz.unibas.ch/dominik/vv_online/json.cfm";
+	//	private static final String JSON_URL = "http://urz-cfaa.urz.unibas.ch/dominik/vv_online/json.cfm";
+	private static final String JSON_URL = "http://nikt.unibas.ch/mobileapp/vv/json.cfm ";
 
 	private static String loadData(String url) throws Exception {
 		URL aUrl = new URL(url);
