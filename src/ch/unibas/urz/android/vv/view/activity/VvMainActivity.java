@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import ch.unibas.urz.android.vv.R;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader.LoaderCallback;
+import ch.unibas.urz.android.vv.helper.GeneralMenuHelper;
 import ch.unibas.urz.android.vv.helper.Settings;
 import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.VvDetails;
@@ -90,9 +93,9 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			cursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, VvEntity.SELECTION_BY_PARENT_PERIOD, selection, VvEntity.SORTORDER_DEFAULT);
 			loadData();
 		}
-		cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor, new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER,
-				VvEntity.NAME_ACS_CREDITPOINTS, VvEntity.NAME_FAVORITE, VvEntity.NAME_UPDATE_TIMESTAMP }, new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits, R.id.cbFavorite,
-				R.id.tvUpdated });
+		cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor,
+				new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER, VvEntity.NAME_ACS_CREDITPOINTS, VvEntity.NAME_FAVORITE, VvEntity.NAME_UPDATE_TIMESTAMP },
+				new int[] { R.id.tvTitle, R.id.tvId, R.id.tvCredits, R.id.cbFavorite, R.id.tvUpdated });
 
 		cursorAdapter.setViewBinder(new ViewBinder() {
 
@@ -112,8 +115,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 					return true;
 				} else if (columnIndex == VvEntity.INDEX_FAVORITE) {
 					final long acsId = cursor.getLong(VvEntity.INDEX_ACS_ID);
-					final String title = cursor.getString(VvEntity.INDEX_ACS_TITLE);
-					if (acsId != VvEntity.VV_FIXED_ENTRY_ACS_ID) {
+					if (acsId > -1) {
 						view.setVisibility(View.VISIBLE);
 						CheckBox cbFavorite = (CheckBox) view;
 						final boolean selected = cursor.getInt(VvEntity.INDEX_FAVORITE) > 0;
@@ -198,5 +200,20 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	public void loadingFinished() {
 		cursor.requery();
 		actionBar.setProgressBarVisibility(View.GONE);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.gerneral_options_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (GeneralMenuHelper.onOptionsItemSelected(this, item)) {
+			return true;
+		}
+		return false;
 	}
 }

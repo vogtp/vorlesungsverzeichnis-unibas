@@ -28,7 +28,9 @@
 				<category android:name="android.intent.category.DEFAULT"></category>
 				<data
 					android:mimeType="vnd.android.cursor.item/ch.unibas.urz.android.vorlesungsverzeichnis.details"></data>
-			</intent-filter></activity>
+			</intent-filter>
+		</activity>
+		<activity android:name=".view.preference.VvPreferenceActivity"></activity>
 
 	</application>
 </manifest>

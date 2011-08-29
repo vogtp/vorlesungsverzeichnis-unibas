@@ -12,6 +12,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import ch.unibas.urz.android.vv.R;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader.LoaderCallback;
 import ch.unibas.urz.android.vv.helper.Formater;
+import ch.unibas.urz.android.vv.helper.GeneralMenuHelper;
 import ch.unibas.urz.android.vv.helper.Logger;
 import ch.unibas.urz.android.vv.helper.Settings;
 import ch.unibas.urz.android.vv.provider.db.DB.VvDetails;
@@ -176,4 +179,20 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 			dataloader.execute((Object[]) null);
 		}
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.gerneral_options_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (GeneralMenuHelper.onOptionsItemSelected(this, item)) {
+			return true;
+		}
+		return false;
+	}
+
 }

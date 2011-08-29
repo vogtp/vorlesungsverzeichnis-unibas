@@ -6,16 +6,9 @@ import android.preference.PreferenceManager;
 
 public class Settings {
 
-	public enum SearchType {
-		ALL, STAFF, STUDENTS
-	}
-
-	private static final String TYPE_STAFF = "1";
-	private static final String TYPE_STUDENTS = "2";
-
-	public static final int APP_APPEARIANCE_UNIBAS_TURQUISE = 1;
-	public static final int APP_APPEARIANCE_ANDROID = 2;
-
+	private static final long DAY_IN_MILLIES = 1000 * 60 * 60 * 24;
+	private static final long WEEK_IN_MILLIES = DAY_IN_MILLIES * 7;
+	private static final long MONTH_IN_MILLIES = DAY_IN_MILLIES * 30;
 	private static Settings instance;
 	private final Context ctx;
 
@@ -43,7 +36,18 @@ public class Settings {
 	}
 
 	public long getUpdateFrequency() {
-		return 1000 * 60 * 60 * 24;
+		long f = DAY_IN_MILLIES;
+		try {
+			String s =  getPreferences().getString("prefKeyUpdateIntervall", "1");
+			if ("2".equals(s)) {
+				f = WEEK_IN_MILLIES;
+			} else if ("3".endsWith(s)) {
+				f = MONTH_IN_MILLIES;
+			}
+		} catch (Exception e) {
+			Logger.w("Cannot parse update frequency", e);
+		}
+		return f;
 	}
 
 }

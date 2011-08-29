@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<ListPreference android:title="@string/prefUpdateIntervall" android:dialogTitle="@string/prefUpdateIntervall" android:key="prefKeyUpdateIntervall" android:summary="@string/prefUpdateIntervallLong" android:entries="@array/prefAppAppearanceEntries" android:entryValues="@array/prefAppAppearanceValues" android:defaultValue="1"></ListPreference>
+
+</PreferenceScreen>

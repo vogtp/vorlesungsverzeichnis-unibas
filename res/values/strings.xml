@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="prefAppAppearanceEntries">
+        <item>Täglich</item>
+        <item>Wöchentlich</item>
+        <item>Monatlich</item>
+    </string-array>
     <string name="app_name">Vorlesungsverzeichnis Uni Basel</string>
     <string name="app_title">Vorlesungsverzeichnis</string>
     <string name="label_vv">Vorlesungsverzeichnis</string>
@@ -35,4 +40,7 @@
     <string name="detailsBemerkungen">Bemerkungen</string>
     <string name="labelMore">mehr</string>
     <string name="labelLess">weniger</string>
+    <string name="menuSettings">Einstellungen</string>
+    <string name="prefUpdateIntervall">Update Intervall</string>
+    <string name="prefUpdateIntervallLong">Wie oft sollen die Daten syncronisiert werden.</string>
 </resources>
