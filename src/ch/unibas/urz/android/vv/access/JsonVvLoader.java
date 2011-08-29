@@ -21,20 +21,26 @@ import ch.unibas.urz.android.vv.provider.db.DB;
 
 public class JsonVvLoader {
 
-	//	private static final String JSON_URL = "http://urz-cfaa.urz.unibas.ch/dominik/vv_online/json.cfm";
-	private static final String JSON_URL = "http://nikt.unibas.ch/mobileapp/vv/json.cfm ";
+	//private static final String JSON_URL = "http://urz-cfaa.urz.unibas.ch/dominik/vv_online/json.cfm";
+
+	private static final String JSON_URL = "http://nikt.unibas.ch/mobileapp/vv/json.cfm";
 
 	private static String loadData(String url) throws Exception {
-		URL aUrl = new URL(url);
-		URLConnection conn = aUrl.openConnection();
-		conn.connect();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		StringBuilder sb = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line);
+		try {
+			URL aUrl = new URL(url);
+			URLConnection conn = aUrl.openConnection();
+			conn.connect();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+			return sb.toString();
+		} catch (Exception e) {
+			Logger.w("Cannot load data from network", e);
+			return "";
 		}
-		return sb.toString();
 	}
 
 	public static void loadEntries(Context ctx, long periodId, long parentId) {
@@ -150,11 +156,12 @@ public class JsonVvLoader {
 			values.put(DB.VvDetails.NAME_BEMERKUNG, object.getString(DB.VvDetails.NAME_BEMERKUNG));
 			values.put(DB.VvDetails.NAME_TYPE, object.getString(DB.VvDetails.NAME_TYPE));
 			values.put(DB.VvDetails.NAME_LERNZIELE, object.getString(DB.VvDetails.NAME_LERNZIELE));
+			values.put(DB.VvDetails.NAME_LITERATUR, object.getString(DB.VvDetails.NAME_LITERATUR));
 			values.put(DB.VvDetails.NAME_HNOTE, object.getString(DB.VvDetails.NAME_HNOTE));
 			values.put(DB.VvDetails.NAME_LINK, object.getString(DB.VvDetails.NAME_LINK));
 			values.put(DB.VvDetails.NAME_LINKDESC, object.getString(DB.VvDetails.NAME_LINKDESC));
 			values.put(DB.VvDetails.NAME_VNR, object.getString(DB.VvDetails.NAME_VNR));
-
+			values.put(DB.VvDetails.NAME_ANMELDUNGL, object.getString(DB.VvDetails.NAME_ANMELDUNGL));
 
 			// special fields
 			values.put(DB.VvDetails.NAME_MODULE, baseObject.getJSONArray("module").toString());
