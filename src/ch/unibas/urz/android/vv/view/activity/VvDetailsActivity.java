@@ -89,7 +89,8 @@ public class VvDetailsActivity extends Activity implements LoaderCallback {
 
 		addDetailView(llMain, R.string.detailsEcts, VvDetails.INDEX_CREDITP);
 		addDetailView(llMain, R.string.detailsDozierende, Formater.formatLecturer(detailsCursor.getString(VvDetails.INDEX_LECTURER)));
-		addDetailView(llMain, R.string.detailsZeit, Formater.formatTimePlace(detailsCursor.getString(VvDetails.INDEX_TIME_PLACE)));
+		addDetailView(llMain, R.string.detailsZeit, Formater
+				.formatTimePlace(detailsCursor.getString(VvDetails.INDEX_TIME_PLACE), detailsCursor.getString(VvDetails.INDEX_NOTETIME)));
 		addViewDate(llMain, R.string.detailsBeginndatum, VvDetails.INDEX_STARTDATE);
 		addViewDate(llMain, R.string.detailsEnddatum, VvDetails.INDEX_ENDDATE);
 		addDetailView(llMain, R.string.detailsTeilnahmebedingungen, VvDetails.INDEX_TVORAUSSETZUNG); // ???

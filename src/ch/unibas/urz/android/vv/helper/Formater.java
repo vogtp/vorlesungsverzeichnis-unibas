@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
+
 public class Formater {
 
 	public static String formatLecturer(String jsonStr) {
@@ -48,7 +50,7 @@ public class Formater {
 		}
 	}
 
-	public static String formatTimePlace(String jsonStr) {
+	public static String formatTimePlace(String jsonStr, String note) {
 		try {
 			StringBuilder timePlace = new StringBuilder();
 			JSONArray timeArray = new JSONArray(jsonStr);
@@ -64,6 +66,9 @@ public class Formater {
 				SimpleDateFormat sdf = Settings.getInstance().getTimeFomat();
 				timePlace.append(sdf.format(new Date(obj.getLong("STARTTIME")))).append(" - ").append(sdf.format(new Date(obj.getLong("ENDTIME"))));
 				timePlace.append("; ").append(obj.getString("ORT")).append(", ").append(obj.getString("RAUM"));
+			}
+			if (!TextUtils.isEmpty(note)) {
+				timePlace.append("\n\n").append(note);
 			}
 			return timePlace.toString();
 		} catch (JSONException e) {
