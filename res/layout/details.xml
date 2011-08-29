@@ -23,11 +23,11 @@
 				android:paddingBottom="1dp">
 				<TextView android:layout_height="wrap_content"
 					android:textColor="@android:color/black" android:background="@color/backgroundUni"
-					android:text="TextView" android:textAppearance="?android:attr/textAppearanceMedium"
+					android:textAppearance="?android:attr/textAppearanceMedium"
 					android:layout_width="fill_parent" android:id="@+id/tvTitle"></TextView>
 				<TextView android:layout_height="wrap_content"
 					android:textColor="@android:color/darker_gray" android:background="@color/backgroundUni"
-					android:text="TextView" android:layout_width="fill_parent"
+					android:layout_width="fill_parent"
 					android:id="@+id/tvType"></TextView>
 
 			</LinearLayout>
