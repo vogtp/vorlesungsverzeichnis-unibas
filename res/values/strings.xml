@@ -43,4 +43,6 @@
     <string name="menuSettings">Einstellungen</string>
     <string name="prefUpdateIntervall">Update Intervall</string>
     <string name="prefUpdateIntervallLong">Wie oft sollen die Daten syncronisiert werden.</string>
+    <string name="msgLoading">Lade Daten...</string>
+    <string name="msgNoEntries">Keine Daten vorhanden.</string>
 </resources>

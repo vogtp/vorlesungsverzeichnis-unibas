@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/LinearLayout1"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@android:color/white">
+	<TextView android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true" android:id="@+id/tvMsg"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:padding="10dp" android:textColor="@android:color/darker_gray"
+		android:layout_height="wrap_content"  
+		android:layout_width="wrap_content" android:layout_gravity="left|center_vertical"></TextView>
+	<ProgressBar android:id="@+id/pbMsg" style="@android:style/Widget.ProgressBar.Inverse" 
+		android:layout_height="wrap_content" android:layout_gravity="right|center_vertical"
+		android:layout_width="wrap_content" android:padding="7dp"></ProgressBar>
+
+</FrameLayout>

@@ -29,6 +29,7 @@ import ch.unibas.urz.android.vv.helper.Settings;
 import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.VvDetails;
 import ch.unibas.urz.android.vv.provider.db.DB.VvEntity;
+import ch.unibas.urz.android.vv.view.adapter.MessageAdapter;
 
 import com.markupartist.android.widget.ActionBar;
 
@@ -149,7 +150,11 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 				return false;
 			}
 		});
-		getListView().setAdapter(cursorAdapter);
+		if (cursor.getCount() > 0) {
+			getListView().setAdapter(cursorAdapter);
+		} else {
+			getListView().setAdapter(new MessageAdapter(this, R.string.msgLoading, true));
+		}
 		loadData();
 	}
 
@@ -214,6 +219,11 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	@Override
 	public void loadingFinished() {
 		cursor.requery();
+		if (cursor.getCount() > 0) {
+			getListView().setAdapter(cursorAdapter);
+		} else {
+			getListView().setAdapter(new MessageAdapter(this, R.string.msgNoEntries, false));
+		}
 		actionBar.setProgressBarVisibility(View.GONE);
 	}
 
