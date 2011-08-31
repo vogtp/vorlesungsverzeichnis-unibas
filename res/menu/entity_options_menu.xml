@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/itemReload" android:title="@string/menuNeuLaden"
+		android:icon="@android:drawable/ic_menu_rotate"></item>
+
+</menu>

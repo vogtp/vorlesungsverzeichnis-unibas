@@ -13,6 +13,7 @@ import ch.unibas.urz.android.vv.R;
 public class MessageAdapter extends BaseAdapter {
 
 	private static final String ITEM = "";
+	public static final long DEFAULT_ID = Long.MIN_VALUE;
 	private final LayoutInflater inflater;
 	private final int msgRes;
 	private final boolean showProgress;
@@ -36,7 +37,7 @@ public class MessageAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int position) {
-		return position;
+		return DEFAULT_ID;
 	}
 
 	@Override

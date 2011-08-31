@@ -45,4 +45,6 @@
     <string name="prefUpdateIntervallLong">Wie oft sollen die Daten syncronisiert werden.</string>
     <string name="msgLoading">Lade Daten...</string>
     <string name="msgNoEntries">Keine Daten vorhanden.</string>
+    <string name="menuNeuLaden">Neu Laden</string>
+    <string name="menuHome">Startseite</string>
 </resources>

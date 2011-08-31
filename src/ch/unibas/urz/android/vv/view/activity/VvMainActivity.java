@@ -1,6 +1,5 @@
 package ch.unibas.urz.android.vv.view.activity;
 
-
 import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -42,7 +41,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	private Cursor parentCursor;
 	private ActionBar actionBar;
 	private SimpleCursorAdapter cursorAdapter;
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 
 		actionBar = (ActionBar) findViewById(R.id.actionBar1);
 		actionBar.setTitle(R.string.app_title);
-		
+
 		actionBar.addAction(new ActionBar.IntentAction(this, new Intent(this, VvMainActivity.class), ch.unibas.urz.android.theme.R.drawable.home));
 
 		// FIXME getdefault period id
@@ -108,7 +107,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 						// StringBuilder sb = new StringBuilder();
 						// sb.append(getString(R.string.label_ects_points)).append(": ").append(cp);
 						((TextView) view).setText(Integer.toString(cp));
-						((View)view.getParent()).findViewById(R.id.labelCredits).setVisibility(View.VISIBLE);
+						((View) view.getParent()).findViewById(R.id.labelCredits).setVisibility(View.VISIBLE);
 					} else {
 						((View) view.getParent()).findViewById(R.id.labelCredits).setVisibility(View.INVISIBLE);
 						((TextView) view).setText("");
@@ -155,7 +154,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 		} else {
 			getListView().setAdapter(new MessageAdapter(this, R.string.msgLoading, true));
 		}
-		loadData();
+		loadData(false);
 	}
 
 	@Override
@@ -173,7 +172,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 		selection[1] = Long.toString(parentId);
 	}
 
-	private void loadData() {
+	private void loadData(boolean force) {
 		long now = System.currentTimeMillis();
 		long update = now;
 		cursor.requery();
@@ -188,14 +187,18 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			if (u < update) {
 				update = u;
 			}
-			if (parentCursor == null && shouldUpdate(u, now)) {
+			if (parentCursor == null && (force || shouldUpdate(u, now))) {
 				Logger.i("Adding to update " + cursor.getString(VvEntity.INDEX_ACS_TITLE));
 				ids[i++] = cursor.getLong(VvEntity.INDEX_ACS_ID);
 			}
 		}
-		if (shouldUpdate(update, now)) {
+		if (force || shouldUpdate(update, now)) {
 			actionBar.setProgressBarVisibility(View.VISIBLE);
-			dataloader.execute(ids);
+			try {
+				dataloader.execute(ids);
+			} catch (IllegalStateException e) {
+				Logger.w("Cannot run update", e);
+			}
 		}
 	}
 
@@ -207,6 +210,9 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+		if (id == MessageAdapter.DEFAULT_ID) {
+			return;
+		}
 		Uri uri = ContentUris.withAppendedId(VvEntity.CONTENT_URI, id);
 		startActivity(new Intent(Intent.ACTION_VIEW, uri));
 	}
@@ -230,6 +236,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.entity_options_menu, menu);
 		getMenuInflater().inflate(R.menu.gerneral_options_menu, menu);
 		return true;
 	}
@@ -239,6 +246,14 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 		if (GeneralMenuHelper.onOptionsItemSelected(this, item)) {
 			return true;
 		}
-		return false;
+		switch (item.getItemId()) {
+		case R.id.itemReload:
+			loadData(true);
+			return true;
+
+		default:
+			return false;
+
+		}
 	}
 }

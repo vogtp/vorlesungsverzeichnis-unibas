@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.MenuItem;
 import ch.unibas.urz.android.vv.R;
+import ch.unibas.urz.android.vv.view.activity.VvMainActivity;
 import ch.unibas.urz.android.vv.view.preference.VvPreferenceActivity;
 
 
@@ -17,6 +18,10 @@ public class GeneralMenuHelper {
 			ctx.startActivity(i);
 			return true;
 
+		case R.id.itemHome:
+			i = new Intent(ctx, VvMainActivity.class);
+			ctx.startActivity(i);
+			return true;
 		default:
 			return false;
 
