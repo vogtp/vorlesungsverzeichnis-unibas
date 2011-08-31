@@ -3,7 +3,7 @@ package ch.unibas.urz.android.vv.access;
 import android.content.Context;
 import android.os.AsyncTask;
 
-public class AsyncVvDataLoader extends AsyncTask<Object, Object, Object> {
+public class AsyncVvDataLoader extends AsyncTask<Long, Object, Object> {
 
 	private final LoaderCallback loaderCallback;
 	long periodId = 0;
@@ -22,8 +22,7 @@ public class AsyncVvDataLoader extends AsyncTask<Object, Object, Object> {
 	}
 
 	@Override
-	protected Object doInBackground(Object... notUsed) {
-		// FIXME check last update
+	protected Object doInBackground(Long... ids) {
 		Context ctx = loaderCallback.getContext();
 		if (isDetail()) {
 			JsonVvLoader.loadDetails(ctx, getPeriodId(), getId());

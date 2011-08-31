@@ -1,6 +1,5 @@
 package ch.unibas.urz.android.vv.view.activity;
 
-import java.text.DateFormat;
 
 import android.app.ListActivity;
 import android.content.ContentUris;
@@ -10,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -137,7 +137,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 					long updateTs = cursor.getLong(VvEntity.INDEX_UPDATE_TIMESTAMP);
 					TextView tv = (TextView) view;
 					if (updateTs > 0) {
-						tv.setText(DateFormat.getDateInstance().format(updateTs));
+						tv.setText(DateFormat.getDateFormat(VvMainActivity.this).format(updateTs));
 						tv.setVisibility(View.VISIBLE);
 						((View) view.getParent()).findViewById(R.id.labelUpdated).setVisibility(View.VISIBLE);
 					} else {
@@ -171,16 +171,25 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 		long now = System.currentTimeMillis();
 		long update = now;
 		cursor.requery();
+		Long[] ids = null;
+		if (parentCursor == null) {
+			// we are in favorite mode
+			ids = new Long[cursor.getCount()];
+		}
+		int i = 0;
 		for (cursor.moveToFirst(); cursor.moveToNext();) {
 			long u = cursor.getLong(VvEntity.INDEX_UPDATE_TIMESTAMP);
 			if (u < update) {
 				update = u;
 			}
+			if (parentCursor == null) {
+				ids[i++] = cursor.getLong(VvEntity.INDEX_ACS_ID);
+			}
 		}
 		long delta = now - update;
 		if (delta == 0 || delta > Settings.getInstance().getUpdateFrequency()) {
 			actionBar.setProgressBarVisibility(View.VISIBLE);
-			dataloader.execute((Object[]) null);
+			dataloader.execute(ids);
 		}
 	}
 

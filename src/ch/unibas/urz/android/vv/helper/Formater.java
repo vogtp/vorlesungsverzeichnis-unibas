@@ -1,13 +1,15 @@
 package ch.unibas.urz.android.vv.helper;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 
 public class Formater {
 
@@ -50,7 +52,7 @@ public class Formater {
 		}
 	}
 
-	public static String formatTimePlace(String jsonStr, String note) {
+	public static String formatTimePlace(Context ctx, String jsonStr, String note) {
 		try {
 			StringBuilder timePlace = new StringBuilder();
 			JSONArray timeArray = new JSONArray(jsonStr);
@@ -63,10 +65,8 @@ public class Formater {
 				// "STARTTIME":1.015E8,"ENDTIME":1.2E8,"ORT":"Kollegienhaus"}
 				// Mittwoch, 08.15-10.00 Chemie, Organische , Grosser Hörsaal OC
 				timePlace.append(obj.getString("DAY")).append(", ");
-				DateFormat parseFormat = new SimpleDateFormat("HHmmssss");
-				DateFormat df = DateFormat.getTimeInstance(DateFormat.SHORT);
-				timePlace.append(df.format(parseFormat.parse(Long.toString(obj.getLong("STARTTIME")))));
-				timePlace.append(" - ").append(df.format(parseFormat.parse(Long.toString(obj.getLong("ENDTIME")))));
+				timePlace.append(formatTime(ctx, obj.getLong("STARTTIME")));
+				timePlace.append(" - ").append(formatTime(ctx, obj.getLong("ENDTIME")));
 				timePlace.append("; ").append(obj.getString("ORT")).append(", ").append(obj.getString("RAUM"));
 			}
 			if (!TextUtils.isEmpty(note)) {
@@ -77,6 +77,15 @@ public class Formater {
 			Logger.e("Cannot parse timeplace array", e);
 			return "";
 		}
+	}
+
+	private static String formatTime(Context ctx, long time) throws ParseException, JSONException {
+		String timeStr = Long.toString(time);
+		if (time < 99999999) {
+			timeStr = "0" + timeStr;
+		}
+		SimpleDateFormat parseFormat = new SimpleDateFormat("HHmmssss");
+		return DateFormat.getTimeFormat(ctx).format(parseFormat.parse(timeStr));
 	}
 
 }
