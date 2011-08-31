@@ -133,6 +133,8 @@ public interface DB {
 		public static final String SELECTION_BY_ACSID = VvEntity.NAME_ACS_ID + "=?";
 		public static final String SELECTION_BY_PARENT_PERIOD_NOT_UPDATE = VvEntity.NAME_PERIOD_ID + "=? and " + VvEntity.NAME_ACS_PARENT + "=? and not "
 				+ VvEntity.NAME_UPDATE_TIMESTAMP + "=?";
+		public static final String SELECTION_BY_ACSID_PERIOD_NOT_UPDATE = VvEntity.NAME_PERIOD_ID + "=? and " + VvEntity.NAME_ACS_ID + "=? and not "
+				+ VvEntity.NAME_UPDATE_TIMESTAMP + "=?";
 		public static final String SELECTION_FAVORITES = VvEntity.NAME_FAVORITE + ">0";
 
 		public static final String SORTORDER_DEFAULT = NAME_ACS_SORT + " ASC";

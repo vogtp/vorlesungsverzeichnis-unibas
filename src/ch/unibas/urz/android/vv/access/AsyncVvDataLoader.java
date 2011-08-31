@@ -27,7 +27,15 @@ public class AsyncVvDataLoader extends AsyncTask<Long, Object, Object> {
 		if (isDetail()) {
 			JsonVvLoader.loadDetails(ctx, getPeriodId(), getId());
 		} else {
-			JsonVvLoader.loadEntries(ctx, getPeriodId(), getId());
+			if (ids == null) {
+				JsonVvLoader.loadEntriesFromParent(ctx, getPeriodId(), getId());
+			} else {
+				for (Long id : ids) {
+					if (id != null) {
+						JsonVvLoader.loadEntry(ctx, getPeriodId(), id);
+					}
+				}
+			}
 		}
 		return null;
 	}

@@ -24,6 +24,7 @@ import ch.unibas.urz.android.vv.R;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader;
 import ch.unibas.urz.android.vv.access.AsyncVvDataLoader.LoaderCallback;
 import ch.unibas.urz.android.vv.helper.GeneralMenuHelper;
+import ch.unibas.urz.android.vv.helper.Logger;
 import ch.unibas.urz.android.vv.helper.Settings;
 import ch.unibas.urz.android.vv.provider.db.DB;
 import ch.unibas.urz.android.vv.provider.db.DB.VvDetails;
@@ -91,7 +92,6 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			((TextView) findViewById(R.id.tvInfo)).setText(R.string.msg_favorites);
 		} else {
 			cursor = managedQuery(VvEntity.CONTENT_URI, VvEntity.PROJECTION_DEFAULT, VvEntity.SELECTION_BY_PARENT_PERIOD, selection, VvEntity.SORTORDER_DEFAULT);
-			loadData();
 		}
 		cursorAdapter = new SimpleCursorAdapter(this, R.layout.vventity_item, cursor,
 				new String[] { VvEntity.NAME_ACS_TITLE, VvEntity.NAME_ACS_NUMBER, VvEntity.NAME_ACS_CREDITPOINTS, VvEntity.NAME_FAVORITE, VvEntity.NAME_UPDATE_TIMESTAMP },
@@ -150,6 +150,7 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			}
 		});
 		getListView().setAdapter(cursorAdapter);
+		loadData();
 	}
 
 	@Override
@@ -182,15 +183,20 @@ public class VvMainActivity extends ListActivity implements LoaderCallback {
 			if (u < update) {
 				update = u;
 			}
-			if (parentCursor == null) {
+			if (parentCursor == null && shouldUpdate(u, now)) {
+				Logger.i("Adding to update " + cursor.getString(VvEntity.INDEX_ACS_TITLE));
 				ids[i++] = cursor.getLong(VvEntity.INDEX_ACS_ID);
 			}
 		}
-		long delta = now - update;
-		if (delta == 0 || delta > Settings.getInstance().getUpdateFrequency()) {
+		if (shouldUpdate(update, now)) {
 			actionBar.setProgressBarVisibility(View.VISIBLE);
 			dataloader.execute(ids);
 		}
+	}
+
+	private boolean shouldUpdate(long update, long now) {
+		long delta = now - update;
+		return delta == 0 || delta > Settings.getInstance().getUpdateFrequency();
 	}
 
 	@Override

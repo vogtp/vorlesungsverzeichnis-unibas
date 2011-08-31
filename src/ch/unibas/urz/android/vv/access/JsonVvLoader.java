@@ -7,6 +7,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ContentProviderOperation;
@@ -43,7 +44,29 @@ public class JsonVvLoader {
 		}
 	}
 
-	public static void loadEntries(Context ctx, long periodId, long parentId) {
+	public static void loadEntry(Context ctx, long periodId, long id) {
+		long now = System.currentTimeMillis();
+		ContentResolver contentResolver = ctx.getContentResolver();
+		ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+		try {
+			StringBuilder url = new StringBuilder(JSON_URL);
+			url.append("?acs_id=").append(id);
+			if (periodId > 0) {
+				url.append("&period_id=").append(periodId);
+			}
+			insertOrUpdateVvEntity(contentResolver, operations, url, periodId, now);
+
+			Builder delete = ContentProviderOperation.newDelete(DB.VvEntity.CONTENT_URI);
+			delete.withSelection(DB.VvEntity.SELECTION_BY_PARENT_PERIOD_NOT_UPDATE, new String[] { Long.toString(periodId), Long.toString(id), Long.toString(now) });
+			operations.add(delete.build());
+			contentResolver.applyBatch(VvContentProvider.AUTHORITY, operations);
+		} catch (Exception e) {
+			Logger.e("Cannot get VV entity info from the network", e);
+		}
+
+	}
+
+	public static void loadEntriesFromParent(Context ctx, long periodId, long parentId) {
 		long now = System.currentTimeMillis();
 		ContentResolver contentResolver = ctx.getContentResolver();
 		ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
@@ -53,52 +76,57 @@ public class JsonVvLoader {
 			if (periodId > 0) {
 				url.append("&period_id=").append(periodId);
 			}
-			JSONArray data = new JSONArray(loadData(url.toString()));
-			for (int i = 0; i < data.length(); i++) {
-				JSONObject object = data.getJSONObject(i);
-				long acsId = object.getLong(DB.VvEntity.NAME_ACS_ID);
-				String[] acsIdSelectionArgs = new String[] { Long.toString(acsId) };
-				boolean exists = false;
-				Cursor c = contentResolver.query(DB.VvEntity.CONTENT_URI, DB.VvEntity.PROJECTION_ACS_ID, DB.VvEntity.SELECTION_BY_ACSID, acsIdSelectionArgs, null);
-				if (c != null) {
-					exists = c.moveToFirst();
-					c.close();
-				}
-
-				Builder insertOrUpdate;
-				if (exists) {
-					insertOrUpdate = ContentProviderOperation.newUpdate(DB.VvEntity.CONTENT_URI);
-					insertOrUpdate.withSelection(DB.VvEntity.SELECTION_BY_ACSID, acsIdSelectionArgs);
-				} else {
-					insertOrUpdate = ContentProviderOperation.newInsert(DB.VvEntity.CONTENT_URI);
-				}
-
-				ContentValues values = new ContentValues();
-				values.put(DB.VvEntity.NAME_PERIOD_ID, periodId);
-				values.put(DB.VvEntity.NAME_UPDATE_TIMESTAMP, now);
-				values.put(DB.VvEntity.NAME_ACS_ID, acsId);
-				values.put(DB.VvEntity.NAME_ACS_NUMBER, object.getString(DB.VvEntity.NAME_ACS_NUMBER));
-				values.put(DB.VvEntity.NAME_ACS_CATEGORY, object.getString(DB.VvEntity.NAME_ACS_CATEGORY));
-				values.put(DB.VvEntity.NAME_ACS_TITLE, object.getString(DB.VvEntity.NAME_ACS_TITLE));
-				values.put(DB.VvEntity.NAME_ACS_CREDITPOINTS, object.getInt(DB.VvEntity.NAME_ACS_CREDITPOINTS));
-				values.put(DB.VvEntity.NAME_ACS_OTYPE, object.getString(DB.VvEntity.NAME_ACS_OTYPE));
-				values.put(DB.VvEntity.NAME_ACS_OBJID, object.getLong(DB.VvEntity.NAME_ACS_OBJID));
-				values.put(DB.VvEntity.NAME_ACS_SORT, object.getLong(DB.VvEntity.NAME_ACS_SORT));
-				values.put(DB.VvEntity.NAME_ACS_PARENT, object.getLong(DB.VvEntity.NAME_ACS_PARENT));
-
-				insertOrUpdate.withValues(values);
-				operations.add(insertOrUpdate.build());
-				Logger.i("Found entity: " + object.getString(DB.VvEntity.NAME_ACS_TITLE));
-			}
+			insertOrUpdateVvEntity(contentResolver, operations, url, periodId, now);
 
 			Builder delete = ContentProviderOperation.newDelete(DB.VvEntity.CONTENT_URI);
 			delete.withSelection(DB.VvEntity.SELECTION_BY_PARENT_PERIOD_NOT_UPDATE, new String[] { Long.toString(periodId), Long.toString(parentId), Long.toString(now) });
 			operations.add(delete.build());
 			contentResolver.applyBatch(VvContentProvider.AUTHORITY, operations);
 		} catch (Exception e) {
-			Logger.e("Cannot get VV entity info from the network", e);
+			Logger.e("Cannot get children of VV entity info from the network", e);
 		}
 
+	}
+
+	private static void insertOrUpdateVvEntity(ContentResolver contentResolver, ArrayList<ContentProviderOperation> operations, StringBuilder url, long periodId, long now)
+			throws JSONException, Exception {
+		JSONArray data = new JSONArray(loadData(url.toString()));
+		for (int i = 0; i < data.length(); i++) {
+			JSONObject object = data.getJSONObject(i);
+			long acsId = object.getLong(DB.VvEntity.NAME_ACS_ID);
+			String[] acsIdSelectionArgs = new String[] { Long.toString(acsId) };
+			boolean exists = false;
+			Cursor c = contentResolver.query(DB.VvEntity.CONTENT_URI, DB.VvEntity.PROJECTION_ACS_ID, DB.VvEntity.SELECTION_BY_ACSID, acsIdSelectionArgs, null);
+			if (c != null) {
+				exists = c.moveToFirst();
+				c.close();
+			}
+
+			Builder insertOrUpdate;
+			if (exists) {
+				insertOrUpdate = ContentProviderOperation.newUpdate(DB.VvEntity.CONTENT_URI);
+				insertOrUpdate.withSelection(DB.VvEntity.SELECTION_BY_ACSID, acsIdSelectionArgs);
+			} else {
+				insertOrUpdate = ContentProviderOperation.newInsert(DB.VvEntity.CONTENT_URI);
+			}
+
+			ContentValues values = new ContentValues();
+			values.put(DB.VvEntity.NAME_PERIOD_ID, periodId);
+			values.put(DB.VvEntity.NAME_UPDATE_TIMESTAMP, now);
+			values.put(DB.VvEntity.NAME_ACS_ID, acsId);
+			values.put(DB.VvEntity.NAME_ACS_NUMBER, object.getString(DB.VvEntity.NAME_ACS_NUMBER));
+			values.put(DB.VvEntity.NAME_ACS_CATEGORY, object.getString(DB.VvEntity.NAME_ACS_CATEGORY));
+			values.put(DB.VvEntity.NAME_ACS_TITLE, object.getString(DB.VvEntity.NAME_ACS_TITLE));
+			values.put(DB.VvEntity.NAME_ACS_CREDITPOINTS, object.getInt(DB.VvEntity.NAME_ACS_CREDITPOINTS));
+			values.put(DB.VvEntity.NAME_ACS_OTYPE, object.getString(DB.VvEntity.NAME_ACS_OTYPE));
+			values.put(DB.VvEntity.NAME_ACS_OBJID, object.getLong(DB.VvEntity.NAME_ACS_OBJID));
+			values.put(DB.VvEntity.NAME_ACS_SORT, object.getLong(DB.VvEntity.NAME_ACS_SORT));
+			values.put(DB.VvEntity.NAME_ACS_PARENT, object.getLong(DB.VvEntity.NAME_ACS_PARENT));
+
+			insertOrUpdate.withValues(values);
+			operations.add(insertOrUpdate.build());
+			Logger.i("Found entity: " + object.getString(DB.VvEntity.NAME_ACS_TITLE));
+		}
 	}
 
 	public static void loadDetails(Context ctx, long periodId, long acsObjId) {
